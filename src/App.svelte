@@ -868,6 +868,10 @@
               <circle cx={px} cy={py} r="30" class="selected-ring" />
             {/if}
 
+            {#if mustJumpFrom && piece === 'fox'}
+              <circle cx={px} cy={py} r="30" class="must-jump-ring" />
+            {/if}
+
             {#if dest}
               <circle
                 cx={px}
@@ -887,6 +891,7 @@
                 class="piece piece-fox"
                 class:piece-selected={selected2}
                 class:piece-movable={foxActive}
+                class:piece-must-jump={!!mustJumpFrom}
                 onclick={() => handleClick(pos.row, pos.col)}
                 onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClick(pos.row, pos.col); }}
                 role="button"
@@ -1440,6 +1445,31 @@
   .piece-selected .fox-bg {
     fill: rgba(224, 122, 60, 0.45);
     stroke: var(--fox-light);
+    stroke-width: 3.5;
+  }
+
+  .must-jump-ring {
+    fill: rgba(255, 100, 80, 0.12);
+    stroke: rgba(255, 100, 80, 0.8);
+    stroke-width: 4;
+    stroke-dasharray: 7 4;
+    animation: mustJumpPulse 0.6s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(255, 100, 80, 0.6));
+  }
+
+  @keyframes mustJumpPulse {
+    0%, 100% { stroke-opacity: 1; stroke-width: 4; }
+    50% { stroke-opacity: 0.4; stroke-width: 6; }
+  }
+
+  .piece-must-jump {
+    animation: pieceBounce 0.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 100, 80, 0.7));
+  }
+
+  .piece-must-jump .fox-bg {
+    fill: rgba(255, 100, 80, 0.3);
+    stroke: rgba(255, 120, 100, 0.9);
     stroke-width: 3.5;
   }
 
