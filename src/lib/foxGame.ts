@@ -2,6 +2,7 @@ export type Piece = 'fox' | 'hen' | null;
 export type Board = Piece[][];
 export type Position = { row: number; col: number };
 export type Turn = 'fox' | 'hen';
+export type Difficulty = 'easy' | 'medium' | 'hard';
 
 export interface FoxMove {
   to: Position;
@@ -301,45 +302,51 @@ function minimax(
   }
 }
 
-export function getFoxAITurn(board: Board): FoxTurn | null {
+function pickWithMistake<T>(
+  items: T[],
+  scores: number[],
+  isMaximizing: boolean,
+  mistakeChance: number,
+): T {
+  const indexed = items.map((item, i) => ({ item, score: scores[i] }));
+  indexed.sort((a, b) =>
+    isMaximizing ? b.score - a.score : a.score - b.score,
+  );
+
+  if (Math.random() < mistakeChance && indexed.length > 1) {
+    const pool = indexed.slice(1);
+    return pool[Math.floor(Math.random() * pool.length)].item;
+  }
+
+  const best = indexed.filter(
+    (x) => Math.abs(x.score - indexed[0].score) < 0.01,
+  );
+  return best[Math.floor(Math.random() * best.length)].item;
+}
+
+export function getFoxAITurn(board: Board, difficulty: Difficulty = 'hard'): FoxTurn | null {
   const turns = generateFoxTurns(board);
   if (turns.length === 0) return null;
   if (turns.length === 1) return turns[0];
 
-  let bestScore = -Infinity;
-  let bestTurns: FoxTurn[] = [];
+  const depth = difficulty === 'easy' ? 0 : difficulty === 'medium' ? 1 : 2;
+  const mistakeChance = difficulty === 'easy' ? 0.5 : difficulty === 'medium' ? 0.2 : 0;
 
-  for (const t of turns) {
-    const score = minimax(t.resultBoard, 2, 'hen', -Infinity, Infinity);
-    if (score > bestScore + 0.01) {
-      bestScore = score;
-      bestTurns = [t];
-    } else if (Math.abs(score - bestScore) < 0.01) {
-      bestTurns.push(t);
-    }
-  }
-
-  return bestTurns[Math.floor(Math.random() * bestTurns.length)];
+  const scores = turns.map((t) => minimax(t.resultBoard, depth, 'hen', -Infinity, Infinity));
+  return pickWithMistake(turns, scores, true, mistakeChance);
 }
 
-export function getHenAIMove(board: Board): HenMove | null {
+export function getHenAIMove(board: Board, difficulty: Difficulty = 'hard'): HenMove | null {
   const moves = getAllHenMoves(board);
   if (moves.length === 0) return null;
   if (moves.length === 1) return moves[0];
 
-  let bestScore = Infinity;
-  let bestMoves: HenMove[] = [];
+  const depth = difficulty === 'easy' ? 0 : difficulty === 'medium' ? 1 : 2;
+  const mistakeChance = difficulty === 'easy' ? 0.5 : difficulty === 'medium' ? 0.2 : 0;
 
-  for (const m of moves) {
+  const scores = moves.map((m) => {
     const nb = applyHenMove(board, m);
-    const score = minimax(nb, 2, 'fox', -Infinity, Infinity);
-    if (score < bestScore - 0.01) {
-      bestScore = score;
-      bestMoves = [m];
-    } else if (Math.abs(score - bestScore) < 0.01) {
-      bestMoves.push(m);
-    }
-  }
-
-  return bestMoves[Math.floor(Math.random() * bestMoves.length)];
+    return minimax(nb, depth, 'fox', -Infinity, Infinity);
+  });
+  return pickWithMistake(moves, scores, false, mistakeChance);
 }
