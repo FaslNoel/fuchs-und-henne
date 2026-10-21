@@ -110,7 +110,7 @@ export const gameState = $state<PersistedState>({
 });
 
 function persist() {
-  if (gameState.state === 'menu' || gameState.state === 'tutorial') {
+  if (gameState.state === 'tutorial') {
     clearPersisted();
   } else {
     savePersisted({ ...gameState });
