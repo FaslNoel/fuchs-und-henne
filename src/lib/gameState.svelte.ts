@@ -109,28 +109,13 @@ export const gameState = $state<PersistedState>({
   moveCount: persisted.moveCount,
 });
 
-// Sync to localStorage whenever any field changes
-$effect(() => {
-  // Touch all reactive fields so the effect re-runs on any change
-  void gameState.state;
-  void gameState.mode;
-  void gameState.difficulty;
-  void gameState.board;
-  void gameState.turn;
-  void gameState.selected;
-  void gameState.validDests;
-  void gameState.winner;
-  void gameState.captured;
-  void gameState.mustJumpFrom;
-  void gameState.lastMove;
-  void gameState.moveCount;
-
+function persist() {
   if (gameState.state === 'menu' || gameState.state === 'tutorial') {
     clearPersisted();
   } else {
     savePersisted({ ...gameState });
   }
-});
+}
 
 export function isAITurn(): boolean {
   if (gameState.mode === 'pvp') return false;
@@ -231,6 +216,7 @@ function checkGameStatus() {
       return;
     }
   }
+  persist();
 }
 
 function performFoxMove(from: Position, move: { to: Position; capture?: Position }) {
@@ -256,6 +242,7 @@ function performFoxMove(from: Position, move: { to: Position; capture?: Position
 
   gameState.mustJumpFrom = null;
   checkGameStatus();
+  persist();
 }
 
 function handleFoxClick(r: number, c: number) {
@@ -283,6 +270,7 @@ function handleFoxClick(r: number, c: number) {
       const moves = getFoxMoves(gameState.board, r, c);
       gameState.validDests = moves.map((m) => ({ row: m.to.row, col: m.to.col, capture: !!m.capture }));
     }
+    persist();
     return;
   }
 
@@ -294,6 +282,7 @@ function handleFoxClick(r: number, c: number) {
     };
     performFoxMove(gameState.selected, move);
   }
+  persist();
 }
 
 function handleHenClick(r: number, c: number) {
@@ -320,6 +309,7 @@ function handleHenClick(r: number, c: number) {
       gameState.selected = { row: r, col: c };
       gameState.validDests = moves.map((m) => ({ row: m.row, col: m.col, capture: false }));
     }
+    persist();
   }
 }
 
@@ -332,7 +322,7 @@ export function handleClick(r: number, c: number, aiThinking: boolean) {
   }
 }
 
-export function doAIMove(aiThinkingRef: { value: boolean }): boolean {
+export function doAIMove(): boolean {
   if (gameState.state !== 'playing') return false;
 
   if (gameState.turn === 'fox') {
@@ -340,7 +330,7 @@ export function doAIMove(aiThinkingRef: { value: boolean }): boolean {
     if (!aiTurn) {
       gameState.winner = 'hen';
       gameState.state = 'over';
-      aiThinkingRef.value = false;
+      persist();
       return true;
     }
     gameState.lastMove = { from: aiTurn.from, to: aiTurn.to };
@@ -348,21 +338,21 @@ export function doAIMove(aiThinkingRef: { value: boolean }): boolean {
     gameState.captured += aiTurn.captures.length;
     gameState.moveCount++;
     checkGameStatus();
-    aiThinkingRef.value = false;
+    persist();
     return true;
   } else {
     const move: HenMove | null = getHenAIMove(gameState.board, gameState.difficulty);
     if (!move) {
       gameState.winner = 'fox';
       gameState.state = 'over';
-      aiThinkingRef.value = false;
+      persist();
       return true;
     }
     gameState.lastMove = { from: move.from, to: move.to };
     gameState.board = applyHenMove(gameState.board, move);
     gameState.moveCount++;
     checkGameStatus();
-    aiThinkingRef.value = false;
+    persist();
     return true;
   }
 }
@@ -380,14 +370,17 @@ export function startGame(m: GameMode, difficulty: Difficulty = 'medium') {
   gameState.lastMove = null;
   gameState.moveCount = 0;
   gameState.state = 'playing';
+  persist();
 }
 
 export function backToMenu() {
   gameState.state = 'menu';
   gameState.selected = null;
   gameState.validDests = [];
+  persist();
 }
 
 export function setDifficulty(d: Difficulty) {
   gameState.difficulty = d;
+  persist();
 }

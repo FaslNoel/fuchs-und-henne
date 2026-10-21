@@ -12,7 +12,8 @@
   function scheduleAI() {
     aiThinking = true;
     setTimeout(() => {
-      doAIMove({ value: aiThinking });
+      doAIMove();
+      aiThinking = false;
       if (gameState.state === 'playing' && isAITurn()) {
         scheduleAI();
       }
