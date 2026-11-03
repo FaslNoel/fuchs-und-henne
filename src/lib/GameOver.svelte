@@ -22,7 +22,7 @@
     <p class="winner-desc">
       {winner === 'fox'
         ? `Der Fuchs hat ${captured} ${captured === 1 ? 'Henne' : 'Hennen'} gefressen und entkommen!`
-        : 'Die Hennen haben den Fuchs eingekreist!'}
+        : 'Die Hennen haben die Füchse eingekreist!'}
     </p>
     <div class="overlay-buttons">
       <button type="button" class="btn-primary" onclick={() => startGame(mode)}>Nochmal spielen</button>

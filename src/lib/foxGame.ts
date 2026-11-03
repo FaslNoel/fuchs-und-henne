@@ -28,10 +28,12 @@ export interface MoveDest {
 }
 
 const DIRS = [
-  [-1, 0],
-  [1, 0],
-  [0, -1],
-  [0, 1],
+  [-1, 0], [1, 0], [0, -1], [0, 1],
+  [-1, -1], [-1, 1], [1, -1], [1, 1],
+];
+
+const HEN_DIRS = [
+  [1, 0], [1, -1], [1, 1], [0, -1], [0, 1],
 ];
 
 export function isValidPos(r: number, c: number): boolean {
@@ -46,6 +48,7 @@ export function createBoard(): Board {
   }
   for (let c = 0; c <= 6; c++) b[2][c] = 'hen';
   b[3][3] = 'fox';
+  b[5][3] = 'fox';
   return b;
 }
 
@@ -123,7 +126,7 @@ export function getFoxJumpsOnly(board: Board, r: number, c: number): FoxMove[] {
 
 export function getHenMovesForPiece(board: Board, r: number, c: number): Position[] {
   const moves: Position[] = [];
-  for (const [dr, dc] of DIRS) {
+  for (const [dr, dc] of HEN_DIRS) {
     const nr = r + dr;
     const nc = c + dc;
     if (isValidPos(nr, nc) && board[nr][nc] === null) {
@@ -138,7 +141,7 @@ export function getAllHenMoves(board: Board): HenMove[] {
   for (let r = 0; r < 7; r++) {
     for (let c = 0; c < 7; c++) {
       if (board[r][c] !== 'hen') continue;
-      for (const [dr, dc] of DIRS) {
+      for (const [dr, dc] of HEN_DIRS) {
         const nr = r + dr;
         const nc = c + dc;
         if (isValidPos(nr, nc) && board[nr][nc] === null) {
@@ -151,9 +154,14 @@ export function getAllHenMoves(board: Board): HenMove[] {
 }
 
 export function generateFoxTurns(board: Board): FoxTurn[] {
-  const fox = findFox(board);
-  if (!fox) return [];
-  const foxPosition: Position = fox;
+  const turns: FoxTurn[] = [];
+  for (const fox of findFoxes(board)) {
+    turns.push(...generateFoxTurnsFrom(board, fox));
+  }
+  return turns;
+}
+
+function generateFoxTurnsFrom(board: Board, fox: Position): FoxTurn[] {
   const turns: FoxTurn[] = [];
 
   const steps = getFoxMoves(board, fox.row, fox.col).filter((m) => !m.capture);
@@ -163,7 +171,7 @@ export function generateFoxTurns(board: Board): FoxTurn[] {
   }
 
   function exploreJumps(b: Board, pos: Position, caps: Position[]) {
-    turns.push({ from: foxPosition, to: pos, captures: [...caps], resultBoard: b });
+    turns.push({ from: fox, to: pos, captures: [...caps], resultBoard: b });
     const jumps = getFoxJumpsOnly(b, pos.row, pos.col);
     for (const j of jumps) {
       const nb = applyFoxMove(b, pos, j);
@@ -207,35 +215,26 @@ export function countHens(board: Board): number {
   return n;
 }
 
-export function findFox(board: Board): Position | null {
+export function findFoxes(board: Board): Position[] {
+  const foxes: Position[] = [];
   for (let r = 0; r < 7; r++) {
     for (let c = 0; c < 7; c++) {
-      if (board[r][c] === 'fox') return { row: r, col: c };
+      if (board[r][c] === 'fox') foxes.push({ row: r, col: c });
     }
   }
-  return null;
+  return foxes;
 }
 
-export function checkWinner(board: Board, turn: Turn): 'fox' | 'hen' | null {
-  if (countHens(board) < 4) return 'fox';
-  const fox = findFox(board);
-  if (!fox) return 'fox';
-  if (turn === 'fox') {
-    if (getFoxMoves(board, fox.row, fox.col).length === 0) return 'hen';
-  } else {
-    if (getAllHenMoves(board).length === 0) return 'fox';
-  }
-  return null;
+export function foxHasMoves(board: Board): boolean {
+  return findFoxes(board).some((f) => getFoxMoves(board, f.row, f.col).length > 0);
 }
 
 function evaluateBoard(board: Board): number {
   const hens = countHens(board);
   if (hens < 4) return 10000;
 
-  const fox = findFox(board);
-  if (!fox) return 10000;
-
-  const foxMoves = getFoxMoves(board, fox.row, fox.col);
+  const foxes = findFoxes(board);
+  const foxMoves = foxes.flatMap((f) => getFoxMoves(board, f.row, f.col));
   if (foxMoves.length === 0) return -10000;
 
   let score = 0;
@@ -244,15 +243,17 @@ function evaluateBoard(board: Board): number {
   score += foxMoves.filter((m) => m.capture).length * 14;
 
   let blocked = 0;
-  for (const [dr, dc] of DIRS) {
-    const nr = fox.row + dr;
-    const nc = fox.col + dc;
-    if (!isValidPos(nr, nc)) {
-      blocked++;
-    } else if (board[nr][nc] !== null) {
-      const jr = nr + dr;
-      const jc = nc + dc;
-      if (!isValidPos(jr, jc) || board[jr][jc] !== null) blocked++;
+  for (const fox of foxes) {
+    for (const [dr, dc] of DIRS) {
+      const nr = fox.row + dr;
+      const nc = fox.col + dc;
+      if (!isValidPos(nr, nc)) {
+        blocked++;
+      } else if (board[nr][nc] !== null) {
+        const jr = nr + dr;
+        const jc = nc + dc;
+        if (!isValidPos(jr, jc) || board[jr][jc] !== null) blocked++;
+      }
     }
   }
   score -= blocked * 4;
@@ -283,9 +284,8 @@ function minimax(
   const hens = countHens(board);
   if (hens < 4) return 10000;
 
-  const fox = findFox(board);
   if (turn === 'fox') {
-    if (!fox || getFoxMoves(board, fox.row, fox.col).length === 0) return -10000;
+    if (!foxHasMoves(board)) return -10000;
   } else {
     if (getAllHenMoves(board).length === 0) return 10000;
   }

@@ -37,20 +37,20 @@
           <span class="rule-icon">🦊</span>
           <div>
             <h3>Der Fuchs</h3>
-            <p>Bewegt sich in alle 4 Richtungen. Springt über eine Henne, um sie zu fressen.</p>
+            <p>Bewegt sich in alle 8 Richtungen, auch schräg. Springt über eine Henne, um sie zu fressen. Es gibt zwei Füchse.</p>
           </div>
         </div>
         <div class="rule-block">
           <span class="rule-icon">🐔</span>
           <div>
             <h3>Die Hennen</h3>
-            <p>Bewegen sich vorwärts und seitwärts. Sie können nicht rückwärts ziehen.</p>
+            <p>Bewegen sich nach unten (auch schräg) und seitwärts. Sie können nicht rückwärts ziehen.</p>
           </div>
         </div>
       </div>
       <div class="win-conditions">
         <p><strong>🦊 Fuchs gewinnt:</strong> Wenn weniger als 4 Hennen übrig sind.</p>
-        <p><strong>🐔 Hennen gewinnen:</strong> Wenn sie den Fuchs einkreisen, sodass er nicht mehr ziehen kann.</p>
+        <p><strong>🐔 Hennen gewinnen:</strong> Wenn sie den Fuchs einkreisen, sodass kein Fuchs mehr ziehen kann.</p>
       </div>
     </div>
 

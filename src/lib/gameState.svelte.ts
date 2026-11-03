@@ -8,7 +8,7 @@ import {
   type Difficulty,
   createBoard,
   countHens,
-  findFox,
+  foxHasMoves,
   getFoxMoves,
   getFoxJumpsOnly,
   getFoxAITurn,
@@ -173,7 +173,7 @@ export function getPlayerInstruction(aiThinking: boolean): string {
   if (aiThinking) return 'Gegner denkt nach…';
   if (gameState.mustJumpFrom) return 'Weiterer Sprung möglich!';
   if (gameState.selected && gameState.turn === 'hen' && gameState.validDests.length === 0) return 'Diese Henne kann gerade nicht ziehen';
-  if (gameState.turn === 'fox' && !gameState.selected) return 'Klicke auf den Fuchs 🦊';
+  if (gameState.turn === 'fox' && !gameState.selected) return 'Klicke auf einen Fuchs 🦊';
   if (gameState.turn === 'fox' && gameState.selected) return 'Wähle ein blaues Feld zum Ziehen';
   if (gameState.turn === 'hen' && !gameState.selected) return 'Wähle eine Henne aus 🐔';
   if (gameState.turn === 'hen' && gameState.selected) return 'Wähle ein blaues Feld zum Ziehen';
@@ -198,13 +198,7 @@ function checkGameStatus() {
   }
 
   if (gameState.turn === 'fox') {
-    const fox = findFox(gameState.board);
-    if (!fox) {
-      gameState.winner = 'hen';
-      gameState.state = 'over';
-      return;
-    }
-    if (getFoxMoves(gameState.board, fox.row, fox.col).length === 0) {
+    if (!foxHasMoves(gameState.board)) {
       gameState.winner = 'hen';
       gameState.state = 'over';
       return;
@@ -246,9 +240,6 @@ function performFoxMove(from: Position, move: { to: Position; capture?: Position
 }
 
 function handleFoxClick(r: number, c: number) {
-  const fox = findFox(gameState.board);
-  if (!fox) return;
-
   if (gameState.mustJumpFrom) {
     const dest = gameState.validDests.find((d) => d.row === r && d.col === c);
     if (dest) {
@@ -261,8 +252,8 @@ function handleFoxClick(r: number, c: number) {
     return;
   }
 
-  if (r === fox.row && c === fox.col) {
-    if (gameState.selected) {
+  if (gameState.board[r][c] === 'fox') {
+    if (gameState.selected && gameState.selected.row === r && gameState.selected.col === c) {
       gameState.selected = null;
       gameState.validDests = [];
     } else {
