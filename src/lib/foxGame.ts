@@ -74,6 +74,20 @@ export function getConnections(): [Position, Position][] {
   return conns;
 }
 
+export function getDiagonalConnections(): [Position, Position][] {
+  const conns: [Position, Position][] = [];
+  for (const pos of getValidPositions()) {
+    for (const [dr, dc] of [[1, 1], [1, -1]]) {
+      const nr = pos.row + dr;
+      const nc = pos.col + dc;
+      if (isValidPos(nr, nc)) {
+        conns.push([pos, { row: nr, col: nc }]);
+      }
+    }
+  }
+  return conns;
+}
+
 export function getAdjacentValid(r: number, c: number): Position[] {
   const adj: Position[] = [];
   for (const [dr, dc] of DIRS) {

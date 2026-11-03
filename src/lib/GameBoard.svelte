@@ -41,10 +41,11 @@
     highlightPositions = [],
   }: BoardProps = $props();
 
-  import { getValidPositions, getConnections } from './foxGame';
+  import { getValidPositions, getConnections, getDiagonalConnections } from './foxGame';
 
   const validPositions = getValidPositions();
   const connections = getConnections();
+  const diagonalConnections = getDiagonalConnections();
 
   function isHighlighted(r: number, c: number): boolean {
     return highlightPositions.some((p) => p.row === r && p.col === c);
@@ -68,6 +69,16 @@
       x2={60 + b.col * 60}
       y2={60 + b.row * 60}
       class="connection-line"
+    />
+  {/each}
+
+  {#each diagonalConnections as [a, b]}
+    <line
+      x1={60 + a.col * 60}
+      y1={60 + a.row * 60}
+      x2={60 + b.col * 60}
+      y2={60 + b.row * 60}
+      class="connection-line diagonal-line"
     />
   {/each}
 
@@ -185,6 +196,10 @@
   .connection-line {
     stroke: rgba(255, 255, 255, 0.15);
     stroke-width: 2;
+  }
+
+  .diagonal-line {
+    stroke: rgba(255, 255, 255, 0.1);
   }
 
   .node-dot {
