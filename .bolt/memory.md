@@ -2,7 +2,7 @@
 
 ## Product intent & audience
 
-- Game application with a grid-based board (Spielfeld) and piece movement logic.
+- Game application with a cross-shaped grid-based board (Spielfeld) and piece movement logic.
 - Tutorial/onboarding text exists, instructs players on movement rules.
 - Language: German (UI, tutorial, assistant communication).
 
@@ -14,19 +14,19 @@
 ## Visual design & UX direction
 
 - Board renders lines between adjacent cells (horizontal + vertical).
-- Newly added diagonal lines are visually subtler/dimmer than orthogonal lines to preserve readability.
+- Diagonal lines exist within the arms of the cross; diagonal lines at the inner corners (Einbuchtungen) have been removed per user request.
 - Diagonal lines are purely cosmetic so far — no gameplay rule change.
 - Responsive build verification is part of the workflow.
 
 ## Decisions, constraints & rationale
 
-- Diagonal lines drawn between all diagonally-adjacent cells, decorative only.
-- Movement rules unchanged: pieces still move only horizontally and vertically.
-- Rationale: user asked only for diagonal lines in the board, not diagonal movement.
+- Diagonal lines at inner corners of the cross removed; diagonals within arms retained.
+- Movement rules unchanged: pieces can still move diagonally even where visual lines were removed (fox can jump across corners without a line).
+- Rationale: user asked only to remove corner diagonal lines visually, not to change movement rules.
 - Build confirmed error-free after change.
 
 ## Open questions & assumptions
 
-- Unresolved: Should diagonal *movement* also be enabled, or only update the tutorial text to reflect the visual change? User has not yet answered.
-- Tutorial currently states "Es gibt keine Diagonalzüge" — now potentially misleading given the visual diagonals; needs reconciliation.
+- Unresolved: Should diagonal movement be blocked at locations where diagonal lines were removed, or keep movement independent of visual lines?
+- Tutorial currently states "Es gibt keine Diagonalzüge" — still potentially misleading given remaining visual diagonals and actual diagonal movement; needs reconciliation.
 - Framework tag `DEFAULT_TO_DEV` observed; assumed relevant to dev/build workflow.

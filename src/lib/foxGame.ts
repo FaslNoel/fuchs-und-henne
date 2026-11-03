@@ -83,7 +83,7 @@ export function getDiagonalConnections(): [Position, Position][] {
     for (const [dr, dc] of [[1, 1], [1, -1]]) {
       const nr = pos.row + dr;
       const nc = pos.col + dc;
-      if (isValidPos(nr, nc)) {
+      if (isValidPos(nr, nc) && isValidPos(pos.row, nc) && isValidPos(nr, pos.col)) {
         conns.push([pos, { row: nr, col: nc }]);
       }
     }
