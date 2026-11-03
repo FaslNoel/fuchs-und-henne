@@ -47,8 +47,8 @@ export function createBoard(): Board {
     for (let c = 2; c <= 4; c++) b[r][c] = 'hen';
   }
   for (let c = 0; c <= 6; c++) b[2][c] = 'hen';
-  b[6][2] = 'fox';
-  b[6][4] = 'fox';
+  b[4][2] = 'fox';
+  b[4][4] = 'fox';
   return b;
 }
 

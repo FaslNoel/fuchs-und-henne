@@ -40,7 +40,7 @@ export const tutorialSteps: TutorialStep[] = [
     title: 'Der Fuchs 🦊',
     text: 'Zwei Füchse jagen die Hennen. Sie starten an den unteren Ecken des Stalls. Füchse können in alle acht Richtungen ziehen — auch schräg.',
     icon: '🦊',
-    highlight: [{ row: 6, col: 2 }, { row: 6, col: 4 }],
+    highlight: [{ row: 4, col: 2 }, { row: 4, col: 4 }],
     highlightLabel: 'Fuchs',
   },
   {
