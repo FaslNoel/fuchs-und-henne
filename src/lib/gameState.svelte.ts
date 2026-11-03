@@ -35,6 +35,7 @@ interface PersistedState {
   mustJumpFrom: Position | null;
   lastMove: { from: Position; to: Position } | null;
   moveCount: number;
+  tutorialStep: number;
 }
 
 const STORAGE_KEY = 'fox-hen-game-state';
@@ -57,14 +58,6 @@ function savePersisted(data: PersistedState) {
   }
 }
 
-function clearPersisted() {
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    // ignore
-  }
-}
-
 const initialDefaults: PersistedState = {
   state: 'menu',
   mode: 'pvp',
@@ -78,13 +71,12 @@ const initialDefaults: PersistedState = {
   mustJumpFrom: null,
   lastMove: null,
   moveCount: 0,
+  tutorialStep: 0,
 };
 
 function initFromPersisted(): PersistedState {
   const saved = loadPersisted();
   if (!saved) return { ...initialDefaults };
-  // Don't restore tutorial state — it has its own internal state
-  if (saved.state === 'tutorial') return { ...initialDefaults };
   // Validate board structure
   if (!saved.board || !Array.isArray(saved.board) || saved.board.length !== 7) {
     return { ...initialDefaults };
@@ -107,14 +99,11 @@ export const gameState = $state<PersistedState>({
   mustJumpFrom: persisted.mustJumpFrom,
   lastMove: persisted.lastMove,
   moveCount: persisted.moveCount,
+  tutorialStep: persisted.tutorialStep,
 });
 
 function persist() {
-  if (gameState.state === 'tutorial') {
-    clearPersisted();
-  } else {
-    savePersisted({ ...gameState });
-  }
+  savePersisted({ ...gameState });
 }
 
 export function isAITurn(): boolean {
@@ -361,6 +350,17 @@ export function startGame(m: GameMode, difficulty: Difficulty = 'medium') {
   gameState.lastMove = null;
   gameState.moveCount = 0;
   gameState.state = 'playing';
+  persist();
+}
+
+export function openTutorial() {
+  gameState.state = 'tutorial';
+  gameState.tutorialStep = 0;
+  persist();
+}
+
+export function setTutorialStep(step: number) {
+  gameState.tutorialStep = step;
   persist();
 }
 

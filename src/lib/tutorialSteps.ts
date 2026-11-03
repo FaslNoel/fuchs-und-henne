@@ -20,7 +20,7 @@ function makeBoard(placements: [number, number, 'fox' | 'hen'][]): Board {
 export const tutorialSteps: TutorialStep[] = [
   {
     title: 'Willkommen!',
-    text: 'Dies ist das Spielbrett. Es hat die Form eines Kreuzes. Die Füchse starten in der Mitte und unten, die Hennen oben. Wir zeigen dir Schritt für Schritt, wie das Spiel funktioniert.',
+    text: 'Dies ist das Spielbrett. Es hat die Form eines Kreuzes. Die Füchse starten unten an den Ecken des Stalls, die Hennen oben. Wir zeigen dir Schritt für Schritt, wie das Spiel funktioniert.',
     icon: '🎮',
   },
   {
@@ -38,9 +38,9 @@ export const tutorialSteps: TutorialStep[] = [
   },
   {
     title: 'Der Fuchs 🦊',
-    text: 'Zwei Füchse jagen die Hennen: einer steht in der Mitte, der andere unten. Füchse können in alle acht Richtungen ziehen — auch schräg.',
+    text: 'Zwei Füchse jagen die Hennen. Sie starten an den unteren Ecken des Stalls. Füchse können in alle acht Richtungen ziehen — auch schräg.',
     icon: '🦊',
-    highlight: [{ row: 3, col: 3 }, { row: 5, col: 3 }],
+    highlight: [{ row: 6, col: 2 }, { row: 6, col: 4 }],
     highlightLabel: 'Fuchs',
   },
   {

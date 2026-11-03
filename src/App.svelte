@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { gameState, startGame } from './lib/gameState.svelte';
+  import { gameState, startGame, openTutorial, backToMenu } from './lib/gameState.svelte';
   import Menu from './lib/Menu.svelte';
   import Tutorial from './lib/Tutorial.svelte';
   import PlayScreen from './lib/PlayScreen.svelte';
@@ -9,10 +9,10 @@
   {#if gameState.state === 'menu'}
     <Menu
       onStartGame={(m) => startGame(m, gameState.difficulty)}
-      onStartTutorial={() => gameState.state = 'tutorial'}
+      onStartTutorial={openTutorial}
     />
   {:else if gameState.state === 'tutorial'}
-    <Tutorial onExit={() => gameState.state = 'menu'} />
+    <Tutorial onExit={backToMenu} />
   {:else}
     <PlayScreen />
   {/if}

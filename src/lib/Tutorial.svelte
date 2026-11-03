@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { gameState, setTutorialStep } from './gameState.svelte';
   import { createBoard, getFoxMoves, getHenMovesForPiece, applyFoxMove, applyHenMove, type Board, type Position } from './foxGame';
   import { tutorialSteps } from './tutorialSteps';
   import GameBoard from './GameBoard.svelte';
 
   let { onExit }: { onExit: () => void } = $props();
 
-  let tutorialStep = $state(0);
+  let tutorialStep = $state(gameState.tutorialStep);
   let tutorialBoard: Board = $state(createBoard());
   let tutorialHighlight: Position[] = $state([]);
   let tutorialSelected: Position | null = $state(null);
@@ -35,6 +36,7 @@
   function nextTutorialStep() {
     if (tutorialStep < tutorialSteps.length - 1) {
       tutorialStep++;
+      setTutorialStep(tutorialStep);
       applyTutorialStep();
     } else {
       onExit();
@@ -44,6 +46,7 @@
   function prevTutorialStep() {
     if (tutorialStep > 0) {
       tutorialStep--;
+      setTutorialStep(tutorialStep);
       applyTutorialStep();
     }
   }

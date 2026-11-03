@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { gameState, getTurnLabel } from './gameState.svelte';
+  import { gameState, getTurnLabel, backToMenu } from './gameState.svelte';
   import { countHens } from './foxGame';
 
   let { henCount, captured, moveCount }: { henCount: number; captured: number; moveCount: number } = $props();
 </script>
 
 <header class="game-header">
-  <button type="button" class="back-btn" onclick={() => gameState.state = 'menu'}>← Menü</button>
+  <button type="button" class="back-btn" onclick={backToMenu}>← Menü</button>
   <span class="mode-label">{gameState.mode === 'pvp' ? '2 Spieler' : gameState.mode === 'play-fox' ? 'Du spielst Fuchs' : 'Du spielst Hennen'}</span>
   <span class="move-counter">Zug {moveCount}</span>
 </header>
