@@ -36,6 +36,7 @@ interface PersistedState {
   lastMove: { from: Position; to: Position } | null;
   moveCount: number;
   tutorialStep: number;
+  hasSavedGame: boolean;
 }
 
 const STORAGE_KEY = 'fox-hen-game-state';
@@ -72,6 +73,7 @@ const initialDefaults: PersistedState = {
   lastMove: null,
   moveCount: 0,
   tutorialStep: 0,
+  hasSavedGame: false,
 };
 
 function initFromPersisted(): PersistedState {
@@ -100,6 +102,7 @@ export const gameState = $state<PersistedState>({
   lastMove: persisted.lastMove,
   moveCount: persisted.moveCount,
   tutorialStep: persisted.tutorialStep,
+  hasSavedGame: persisted.hasSavedGame,
 });
 
 function persist() {
@@ -350,6 +353,13 @@ export function startGame(m: GameMode, difficulty: Difficulty = 'medium') {
   gameState.lastMove = null;
   gameState.moveCount = 0;
   gameState.state = 'playing';
+  gameState.hasSavedGame = false;
+  persist();
+}
+
+export function resumeGame() {
+  gameState.state = 'playing';
+  gameState.hasSavedGame = false;
   persist();
 }
 
@@ -365,6 +375,7 @@ export function setTutorialStep(step: number) {
 }
 
 export function backToMenu() {
+  if (gameState.state === 'playing') gameState.hasSavedGame = true;
   gameState.state = 'menu';
   gameState.selected = null;
   gameState.validDests = [];

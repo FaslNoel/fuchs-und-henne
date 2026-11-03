@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Difficulty } from './foxGame';
   import type { GameMode } from './gameState.svelte';
-  import { gameState, setDifficulty } from './gameState.svelte';
+  import { gameState, setDifficulty, resumeGame } from './gameState.svelte';
 
   let {
     onStartGame,
@@ -74,6 +74,15 @@
     <div class="mode-selection">
       <h2>Spielmodus wählen</h2>
       <div class="mode-buttons">
+        {#if gameState.hasSavedGame}
+          <button type="button" class="mode-btn resume-btn" onclick={resumeGame}>
+            <span class="btn-icon">▶</span>
+            <span class="btn-titles">
+              <span class="btn-title">Spiel fortsetzen</span>
+              <span class="btn-desc">Dort weitermachen, wo du aufgehört hast</span>
+            </span>
+          </button>
+        {/if}
         <button type="button" class="mode-btn tutorial-btn" onclick={onStartTutorial}>
           <span class="btn-icon">🎓</span>
           <span class="btn-titles">
@@ -355,6 +364,16 @@
     &:hover {
       background: rgba(90, 159, 212, 0.2);
       border-color: rgba(90, 159, 212, 0.5);
+    }
+  }
+
+  .resume-btn {
+    border-color: rgba(74, 143, 58, 0.5);
+    background: rgba(74, 143, 58, 0.2);
+
+    &:hover {
+      background: rgba(74, 143, 58, 0.3);
+      border-color: rgba(74, 143, 58, 0.7);
     }
   }
 

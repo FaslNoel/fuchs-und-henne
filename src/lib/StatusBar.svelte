@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { gameState, getTurnLabel, backToMenu } from './gameState.svelte';
+  import { gameState, getTurnLabel, backToMenu, startGame } from './gameState.svelte';
   import { countHens } from './foxGame';
 
   let { henCount, captured, moveCount }: { henCount: number; captured: number; moveCount: number } = $props();
@@ -8,7 +8,10 @@
 <header class="game-header">
   <button type="button" class="back-btn" onclick={backToMenu}>← Menü</button>
   <span class="mode-label">{gameState.mode === 'pvp' ? '2 Spieler' : gameState.mode === 'play-fox' ? 'Du spielst Fuchs' : 'Du spielst Hennen'}</span>
-  <span class="move-counter">Zug {moveCount}</span>
+  <div class="header-right">
+    <span class="move-counter">Zug {moveCount}</span>
+    <button type="button" class="restart-btn" onclick={() => startGame(gameState.mode, gameState.difficulty)}>Neustart</button>
+  </div>
 </header>
 
 <div class="status-bar">
@@ -39,7 +42,8 @@
     justify-content: space-between;
     padding: 8px 0 16px;
 
-    .back-btn {
+    .back-btn,
+    .restart-btn {
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.15);
       color: rgba(255, 255, 255, 0.8);
@@ -53,6 +57,12 @@
         background: rgba(255, 255, 255, 0.18);
         color: #fff;
       }
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .mode-label {
