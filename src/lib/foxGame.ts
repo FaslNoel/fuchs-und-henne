@@ -41,6 +41,17 @@ export function isValidPos(r: number, c: number): boolean {
   return (c >= 2 && c <= 4) || (r >= 2 && r <= 4);
 }
 
+const CORNER_CELLS = new Set([
+  '0,2', '0,4', '2,0', '4,0', '2,6', '4,6', '6,2', '6,4',
+  '1,2', '2,1', '1,4', '2,5', '4,1', '5,2', '4,5', '5,4',
+]);
+
+export function isStepAllowed(fromR: number, fromC: number, toR: number, toC: number): boolean {
+  const diagonal = fromR !== toR && fromC !== toC;
+  if (!diagonal) return true;
+  return !CORNER_CELLS.has(`${fromR},${fromC}`) && !CORNER_CELLS.has(`${toR},${toC}`);
+}
+
 export function createBoard(): Board {
   const b: Board = Array.from({ length: 7 }, () => Array(7).fill(null));
   for (let r = 0; r <= 1; r++) {
@@ -83,7 +94,7 @@ export function getDiagonalConnections(): [Position, Position][] {
     for (const [dr, dc] of [[1, 1], [1, -1]]) {
       const nr = pos.row + dr;
       const nc = pos.col + dc;
-      if (isValidPos(nr, nc) && isValidPos(pos.row, nc) && isValidPos(nr, pos.col)) {
+      if (isValidPos(nr, nc) && isStepAllowed(pos.row, pos.col, nr, nc)) {
         conns.push([pos, { row: nr, col: nc }]);
       }
     }
@@ -106,13 +117,13 @@ export function getFoxMoves(board: Board, r: number, c: number): FoxMove[] {
   for (const [dr, dc] of DIRS) {
     const nr = r + dr;
     const nc = c + dc;
-    if (isValidPos(nr, nc) && board[nr][nc] === null) {
+    if (isValidPos(nr, nc) && isStepAllowed(r, c, nr, nc) && board[nr][nc] === null) {
       moves.push({ to: { row: nr, col: nc } });
     }
-    if (isValidPos(nr, nc) && board[nr][nc] === 'hen') {
+    if (isValidPos(nr, nc) && isStepAllowed(r, c, nr, nc) && board[nr][nc] === 'hen') {
       const jr = nr + dr;
       const jc = nc + dc;
-      if (isValidPos(jr, jc) && board[jr][jc] === null) {
+      if (isValidPos(jr, jc) && isStepAllowed(nr, nc, jr, jc) && board[jr][jc] === null) {
         moves.push({ to: { row: jr, col: jc }, capture: { row: nr, col: nc } });
       }
     }
@@ -129,7 +140,7 @@ export function getHenMovesForPiece(board: Board, r: number, c: number): Positio
   for (const [dr, dc] of HEN_DIRS) {
     const nr = r + dr;
     const nc = c + dc;
-    if (isValidPos(nr, nc) && board[nr][nc] === null) {
+    if (isValidPos(nr, nc) && isStepAllowed(r, c, nr, nc) && board[nr][nc] === null) {
       moves.push({ row: nr, col: nc });
     }
   }
@@ -144,7 +155,7 @@ export function getAllHenMoves(board: Board): HenMove[] {
       for (const [dr, dc] of HEN_DIRS) {
         const nr = r + dr;
         const nc = c + dc;
-        if (isValidPos(nr, nc) && board[nr][nc] === null) {
+        if (isValidPos(nr, nc) && isStepAllowed(r, c, nr, nc) && board[nr][nc] === null) {
           moves.push({ from: { row: r, col: c }, to: { row: nr, col: nc } });
         }
       }
