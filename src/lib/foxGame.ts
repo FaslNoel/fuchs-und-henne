@@ -80,7 +80,7 @@ export function getConnections(): [Position, Position][] {
     for (const [dr, dc] of DIRS) {
       const nr = pos.row + dr;
       const nc = pos.col + dc;
-      if (isValidPos(nr, nc) && (pos.row < nr || (pos.row === nr && pos.col < nc))) {
+      if (isValidPos(nr, nc) && isStepAllowed(pos.row, pos.col, nr, nc) && (pos.row < nr || (pos.row === nr && pos.col < nc))) {
         conns.push([pos, { row: nr, col: nc }]);
       }
     }
