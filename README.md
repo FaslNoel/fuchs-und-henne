@@ -4,9 +4,7 @@ Ein traditionelles Brettspiel für zwei Spieler oder gegen den Computer.
 
 ## Jetzt spielen
 
-[![Jetzt spielen](https://img.shields.io/badge/Jetzt%20spielen-%F0%9F%8E%AE%20Los!-2ea44f?style=for-the-badge)](https://USERNAME.github.io/REPO/)
-
-> Ersetze `USERNAME` und `REPO` durch deinen GitHub-Nutzernamen und den Namen des Repositories, damit der Button zur veröffentlichten Version auf GitHub Pages führt.
+[![Jetzt spielen](https://img.shields.io/badge/Jetzt%20spielen-%F0%9F%8E%AE%20Los!-2ea44f?style=for-the-badge)](https://faslnoel.github.io/fuchs-und-henne/)
 
 ## Spielregeln
 
