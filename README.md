@@ -1,47 +1,35 @@
-# Svelte + TS + Vite
+# Fuchs & Henne 🦊🐔
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+Ein traditionelles Brettspiel für zwei Spieler oder gegen den Computer.
 
-## Recommended IDE Setup
+## Jetzt spielen
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+[![Jetzt spielen](https://img.shields.io/badge/Jetzt%20spielen-%F0%9F%8E%AE%20Los!-2ea44f?style=for-the-badge)](https://USERNAME.github.io/REPO/)
 
-## Need an official Svelte framework?
+> Ersetze `USERNAME` und `REPO` durch deinen GitHub-Nutzernamen und den Namen des Repositories, damit der Button zur veröffentlichten Version auf GitHub Pages führt.
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+## Spielregeln
 
-## Technical considerations
+- **Der Fuchs** bewegt sich in alle Richtungen, auch schräg. Er springt über eine Henne, um sie zu fressen. Es gibt zwei Füchse.
+- **Die Hennen** bewegen sich nach unten (auch schräg) und seitwärts. Sie können nicht rückwärts ziehen.
+- **Fuchs gewinnt:** Wenn weniger als 4 Hennen übrig sind.
+- **Hennen gewinnen:** Wenn sie den Fuchs so einkreisen, dass er nicht mehr ziehen kann.
 
-**Why use this over SvelteKit?**
+## Lokal starten
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
-
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
-
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+```bash
+npm install
+npm run dev
 ```
+
+## Build
+
+```bash
+npm run build
+```
+
+## Technologien
+
+- Vite
+- Svelte 5
+- TypeScript
